@@ -1,14 +1,8 @@
-import pygame #helps us make GUI games in python
-import random #help us define which direction the ball will start moving in
-
-#DQN. CNN reads in pixel data. 
-#reinforcement learning. trial and error.
-#maximize action based on reward
-#agent envrioment loop
-#this is called Q Learning
-#based on just game state. mapping of state to action is policy
-#experience replay. learns from past policies
-
+# This code is based on https://github.com/wh33ler/QNet_Pong/blob/master/pong.py
+# This code was by wh33ler. I changed it to be suitable for my scope and documented it.
+ 
+import pygame # simple library to develop simple python games
+import random # simple library to generate random numbers
 
 #size of our window
 WINDOW_WIDTH = 400
@@ -32,12 +26,14 @@ BLACK = (0, 0, 0)
 #initialize our screen using width and height vars
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
+#draw the pipe
 def drawObstacle(center):
     obstacle = pygame.Rect(WINDOW_WIDTH/2,  center + OBSTACLE_SPACE, OBSTACLE_WIDTH, WINDOW_HEIGHT-center-OBSTACLE_SPACE)
     obstacle1 = pygame.Rect(WINDOW_WIDTH/2, 0, OBSTACLE_WIDTH, center-OBSTACLE_SPACE)
     pygame.draw.rect(screen, WHITE, obstacle)
     pygame.draw.rect(screen, WHITE, obstacle1)
 
+#draw the little ship
 def drawShip(shipYPos, shipXPos):
     #create it
     paddle1 = pygame.Rect(shipXPos, shipYPos, SHIP_WIDTH, SHIP_HEIGHT)
@@ -51,7 +47,8 @@ def drawScore(score, neg):
     font = pygame.font.Font(None, 28)    
     scorelabel = font.render("Failed " + str(neg), 1, WHITE)
     screen.blit(scorelabel, (30 , 50))
-    
+  
+#draw infos on the top of the screen    
 def drawInfos(infos, action):
     font = pygame.font.Font(None, 15)
     if(infos[3] != 'model only'):        
@@ -69,9 +66,6 @@ def drawInfos(infos, action):
 		label = font.render("action " + actionText, 1, WHITE)
 		screen.blit(label, (30 , 75))
 		
-
-#[score, shipYPos, paddle2YPos, ballXPos, ballYPos, ballXDirection, ballYDirection]
-
 #update the paddle position
 def updateShip(action, shipYPos, shipXPos, center):
     #if move up
@@ -111,16 +105,16 @@ class AvoidObstacle:
         self.tally = 0
         #initialie positions of paddle
         self.shipYPos = WINDOW_HEIGHT / 2 - SHIP_HEIGHT / 2
-    #
+    # the initial frae
     def getPresentFrame(self):
-        #for each frame, calls the event queue, like if the main window needs to be repainted
+        #for each frame, calls the event queue
         pygame.event.pump()
         #make the background black
         screen.fill(BLACK)
         #draw obstacles
         self.center = random.randint(0, 370)
         drawObstacle(self.center)
-        #draw our paddles
+        #draw our ship
         self.shipXPos = SHIP_BUFFER
         drawShip(self.shipYPos, self.shipXPos)
         #draw our ball
